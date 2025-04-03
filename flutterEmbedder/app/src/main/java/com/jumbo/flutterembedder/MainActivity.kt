@@ -4,6 +4,8 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -23,7 +25,10 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -119,13 +124,54 @@ private fun LaunchContent(
     modifier: Modifier = Modifier
 ) {
     val currentOnLaunch by rememberUpdatedState(onLaunch)
+    var ballSpeed by remember { mutableDoubleStateOf(GlobalVariables.ballSpeed) }
     Column(modifier) {
+        Text(
+            text = "Fullscreen Flutter Activity:",
+            style = MaterialTheme.typography.titleLarge,
+        )
+        Spacer(modifier = Modifier.padding(16.dp))
         Button(
             onClick = {
                 currentOnLaunch()
             }
         ) {
             Text("Start Flutter")
+        }
+        Spacer(modifier = Modifier.padding(32.dp))
+        Text(
+            text = "Bouncing Ball Fragment:",
+            style = MaterialTheme.typography.titleLarge,
+        )
+        Spacer(modifier = Modifier.padding(16.dp))
+        Text("Ball Bounces: ${GlobalVariables.ballBounces}")
+        Spacer(modifier = Modifier.padding(16.dp))
+        Text("Ball Speed: $ballSpeed")
+        Spacer(modifier = Modifier.padding(8.dp))
+        Row {
+            Button(
+                onClick = {
+                    GlobalVariables.ballSpeed -= 0.5
+                    ballSpeed = GlobalVariables.ballSpeed
+                }
+            ) {
+                Text(
+                    text = "-",
+                    style = MaterialTheme.typography.titleLarge
+                )
+            }
+            Spacer(modifier = Modifier.padding(8.dp))
+            Button(
+                onClick = {
+                    GlobalVariables.ballSpeed += 0.5
+                    ballSpeed = GlobalVariables.ballSpeed
+                }
+            ) {
+                Text(
+                    text = "+",
+                    style = MaterialTheme.typography.titleLarge
+                )
+            }
         }
     }
 }
@@ -150,4 +196,9 @@ private fun EmbeddedFragmentStarfieldContent(
             StarfieldFlutterFragment()
         }
     }
+}
+
+object GlobalVariables {
+    var ballSpeed: Double = 1.0
+    var ballBounces: Int = 0
 }

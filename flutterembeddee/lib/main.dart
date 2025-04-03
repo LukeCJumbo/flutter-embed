@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:math';
 
+import 'package:flutter/services.dart';
+
 @pragma('vm:entry-point')
 void ball() => runApp(const BallApp());
 
@@ -117,6 +119,15 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
+class FlutterCommunicator {
+  static const MethodChannel _channel = MethodChannel('com.jumbo.flutterembedder/channel');
+
+  static Future<String> sendMessageToNative(String message) async {
+    final String response = await _channel.invokeMethod('sendMessage', message);
+    return response;
+  }
+}
+
 // ball
 
 
@@ -144,6 +155,7 @@ class _BouncingBallState extends State<BouncingBall> {
   double dx = 1.0;
   double dy = 1.0;
   double ballSize = 50.0;
+  double speed = 1.0;
   late Timer timer;
 
   @override
@@ -151,15 +163,30 @@ class _BouncingBallState extends State<BouncingBall> {
     super.initState();
     timer = Timer.periodic(Duration(milliseconds: 16), (timer) {
       setState(() {
-        x += dx;
-        y += dy;
+        x += dx * speed;
+        y += dy * speed;
         if (x <= 0 || x >= MediaQuery.of(context).size.width - ballSize) {
+          FlutterCommunicator.sendMessageToNative("Ball hit side wall");
           dx = -dx;
         }
         if (y <= 0 || y >= MediaQuery.of(context).size.height - ballSize) {
+          FlutterCommunicator.sendMessageToNative("Ball hit top wall");
           dy = -dy;
         }
       });
+    });
+    FlutterCommunicator._channel.setMethodCallHandler(
+      (MethodCall call) async {
+        if (call.method == 'setSpeed') {
+          setSpeed(call.arguments);
+        }
+      },
+    );
+  }
+
+  void setSpeed(double newSpeed) {
+    setState(() {
+      speed = newSpeed;
     });
   }
 
