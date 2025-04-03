@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
+
+@pragma('vm:entry-point')
+void ball() => runApp(const BallApp());
 
 void main() => runApp(const MyApp());
 
@@ -105,6 +109,79 @@ class _MyHomePageState extends State<MyHomePage> {
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
+    );
+  }
+}
+
+// ball
+
+
+class BallApp extends StatelessWidget {
+  const BallApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        body: BouncingBall(),
+      ),
+    );
+  }
+}
+
+class BouncingBall extends StatefulWidget {
+  @override
+  _BouncingBallState createState() => _BouncingBallState();
+}
+
+class _BouncingBallState extends State<BouncingBall> {
+  double x = 0.0;
+  double y = 0.0;
+  double dx = 1.0;
+  double dy = 1.0;
+  double ballSize = 50.0;
+  late Timer timer;
+
+  @override
+  void initState() {
+    super.initState();
+    timer = Timer.periodic(Duration(milliseconds: 16), (timer) {
+      setState(() {
+        x += dx;
+        y += dy;
+        if (x <= 0 || x >= MediaQuery.of(context).size.width - ballSize) {
+          dx = -dx;
+        }
+        if (y <= 0 || y >= MediaQuery.of(context).size.height - ballSize) {
+          dy = -dy;
+        }
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    timer.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Positioned(
+          left: x,
+          top: y,
+          child: Container(
+            width: ballSize,
+            height: ballSize,
+            decoration: BoxDecoration(
+              color: Color(0xFF0000FF),
+              shape: BoxShape.circle,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

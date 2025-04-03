@@ -2,14 +2,10 @@ package com.jumbo.flutterembedder
 
 import android.os.Bundle
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Construction
 import androidx.compose.material.icons.filled.Home
@@ -35,7 +31,6 @@ import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.compose.AndroidFragment
 import io.flutter.embedding.android.FlutterActivity
-import io.flutter.embedding.android.FlutterFragment
 
 class MainActivity : FragmentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
@@ -93,9 +88,7 @@ class MainActivity : FragmentActivity() {
                             }
 
                             1 -> {
-                                EmbeddedFragmentsContent(
-                                    modifier = Modifier.padding(16.dp)
-                                )
+                                EmbeddedFragmentsContent(modifier = Modifier.fillMaxSize())
                             }
                         }
                     }
@@ -126,15 +119,9 @@ private fun LaunchContent(
 private fun EmbeddedFragmentsContent(
     modifier: Modifier = Modifier
 ) {
-    Column(modifier, verticalArrangement = Arrangement.spacedBy(32.dp)) {
-        repeat(2) {
-            AndroidFragment<FlutterFragment>(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(128.dp)
-            ) {
-                FlutterFragment.createDefault()
-            }
+    Box(modifier) {
+        AndroidFragment<BallFlutterFragment>(modifier = Modifier.fillMaxSize()) {
+            BallFlutterFragment()
         }
     }
 }
