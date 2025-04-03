@@ -2,17 +2,14 @@ package com.jumbo.flutterembedder
 
 import android.os.Bundle
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Construction
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.SportsBaseball
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -35,7 +32,6 @@ import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.compose.AndroidFragment
 import io.flutter.embedding.android.FlutterActivity
-import io.flutter.embedding.android.FlutterFragment
 
 class MainActivity : FragmentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
@@ -70,8 +66,18 @@ class MainActivity : FragmentActivity() {
                                     onClick = { selectedIndex = 1 },
                                     icon = {
                                         Icon(
-                                            Icons.Filled.Construction,
-                                            contentDescription = "Embedding"
+                                            Icons.Filled.SportsBaseball,
+                                            contentDescription = "Ball"
+                                        )
+                                    }
+                                )
+                                NavigationBarItem(
+                                    selected = selectedIndex == 2,
+                                    onClick = { selectedIndex = 2 },
+                                    icon = {
+                                        Icon(
+                                            Icons.Filled.Star,
+                                            contentDescription = "Starfield"
                                         )
                                     }
                                 )
@@ -93,9 +99,11 @@ class MainActivity : FragmentActivity() {
                             }
 
                             1 -> {
-                                EmbeddedFragmentsContent(
-                                    modifier = Modifier.padding(16.dp)
-                                )
+                                EmbeddedFragmentBallContent(modifier = Modifier.fillMaxSize())
+                            }
+
+                            2 -> {
+                                EmbeddedFragmentStarfieldContent(modifier = Modifier.fillMaxSize())
                             }
                         }
                     }
@@ -123,18 +131,23 @@ private fun LaunchContent(
 }
 
 @Composable
-private fun EmbeddedFragmentsContent(
+private fun EmbeddedFragmentBallContent(
     modifier: Modifier = Modifier
 ) {
-    Column(modifier, verticalArrangement = Arrangement.spacedBy(32.dp)) {
-        repeat(2) {
-            AndroidFragment<FlutterFragment>(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(128.dp)
-            ) {
-                FlutterFragment.createDefault()
-            }
+    Box(modifier) {
+        AndroidFragment<BallFlutterFragment>(modifier = Modifier.fillMaxSize()) {
+            BallFlutterFragment()
+        }
+    }
+}
+
+@Composable
+private fun EmbeddedFragmentStarfieldContent(
+    modifier: Modifier = Modifier
+) {
+    Box(modifier) {
+        AndroidFragment<StarfieldFlutterFragment>(modifier = Modifier.fillMaxSize()) {
+            StarfieldFlutterFragment()
         }
     }
 }
