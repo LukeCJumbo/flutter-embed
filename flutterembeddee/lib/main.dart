@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
+import 'dart:math';
 
 @pragma('vm:entry-point')
 void ball() => runApp(const BallApp());
+
+@pragma('vm:entry-point')
+void starfield() => runApp(const StarfieldApp());
 
 void main() => runApp(const MyApp());
 
@@ -183,5 +187,114 @@ class _BouncingBallState extends State<BouncingBall> {
         ),
       ],
     );
+  }
+}
+
+class StarfieldApp extends StatelessWidget {
+  const StarfieldApp({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        backgroundColor: Colors.black,
+        body: const Starfield(),
+      ),
+    );
+  }
+}
+
+class Starfield extends StatefulWidget {
+  const Starfield({Key? key}) : super(key: key);
+
+  @override
+  _StarfieldState createState() => _StarfieldState();
+}
+
+class _StarfieldState extends State<Starfield> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late List<Star> _stars;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(seconds: 1),
+      vsync: this,
+    )..repeat();
+
+    _stars = List.generate(200, (index) => Star());
+
+    _controller.addListener(() {
+      setState(() {
+        for (var star in _stars) {
+          star.update();
+        }
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomPaint(
+      painter: StarfieldPainter(_stars),
+      child: Container(),
+    );
+  }
+}
+
+class Star {
+  double x, y, z;
+  final double speed = 2.0;
+  final Random random = Random();
+
+  Star()
+      : x = Random().nextDouble() * 2 - 1,
+        y = Random().nextDouble() * 2 - 1,
+        z = Random().nextDouble();
+
+  void update() {
+    z -= 0.02;
+    if (z <= 0) {
+      z = 1;
+      x = random.nextDouble() * 2 - 1;
+      y = random.nextDouble() * 2 - 1;
+    }
+  }
+
+  Offset getOffset(Size size) {
+    final double halfWidth = size.width / 2;
+    final double halfHeight = size.height / 2;
+    final double scale = size.width / 2;
+    final double sx = (x / z) * scale + halfWidth;
+    final double sy = (y / z) * scale + halfHeight;
+    return Offset(sx, sy);
+  }
+}
+
+class StarfieldPainter extends CustomPainter {
+  final List<Star> stars;
+
+  StarfieldPainter(this.stars);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final Paint paint = Paint()..color = Colors.white;
+    for (var star in stars) {
+      final Offset offset = star.getOffset(size);
+      final double radius = (1 - star.z) * 2;
+      canvas.drawCircle(offset, radius, paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return true;
   }
 }

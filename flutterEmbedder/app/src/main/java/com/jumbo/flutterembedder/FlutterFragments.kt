@@ -7,3 +7,9 @@ class BallFlutterFragment : FlutterFragment() {
         return "ball"
     }
 }
+
+class StarfieldFlutterFragment : FlutterFragment() {
+    override fun getDartEntrypointFunctionName(): String {
+        return "starfield"
+    }
+}

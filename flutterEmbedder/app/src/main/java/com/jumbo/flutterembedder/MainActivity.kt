@@ -7,8 +7,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Construction
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.SportsBaseball
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -65,8 +66,18 @@ class MainActivity : FragmentActivity() {
                                     onClick = { selectedIndex = 1 },
                                     icon = {
                                         Icon(
-                                            Icons.Filled.Construction,
-                                            contentDescription = "Embedding"
+                                            Icons.Filled.SportsBaseball,
+                                            contentDescription = "Ball"
+                                        )
+                                    }
+                                )
+                                NavigationBarItem(
+                                    selected = selectedIndex == 2,
+                                    onClick = { selectedIndex = 2 },
+                                    icon = {
+                                        Icon(
+                                            Icons.Filled.Star,
+                                            contentDescription = "Starfield"
                                         )
                                     }
                                 )
@@ -88,7 +99,11 @@ class MainActivity : FragmentActivity() {
                             }
 
                             1 -> {
-                                EmbeddedFragmentsContent(modifier = Modifier.fillMaxSize())
+                                EmbeddedFragmentBallContent(modifier = Modifier.fillMaxSize())
+                            }
+
+                            2 -> {
+                                EmbeddedFragmentStarfieldContent(modifier = Modifier.fillMaxSize())
                             }
                         }
                     }
@@ -116,12 +131,23 @@ private fun LaunchContent(
 }
 
 @Composable
-private fun EmbeddedFragmentsContent(
+private fun EmbeddedFragmentBallContent(
     modifier: Modifier = Modifier
 ) {
     Box(modifier) {
         AndroidFragment<BallFlutterFragment>(modifier = Modifier.fillMaxSize()) {
             BallFlutterFragment()
+        }
+    }
+}
+
+@Composable
+private fun EmbeddedFragmentStarfieldContent(
+    modifier: Modifier = Modifier
+) {
+    Box(modifier) {
+        AndroidFragment<StarfieldFlutterFragment>(modifier = Modifier.fillMaxSize()) {
+            StarfieldFlutterFragment()
         }
     }
 }
